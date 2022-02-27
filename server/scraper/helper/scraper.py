@@ -12,15 +12,14 @@ else:
     yutil = utils.Utils()
 
 
-
 class Extractor:
     def __init__(self):
         self.current_error = None
 
     def dining_dir(self) -> List:
         json_data = {
-            "last_updated" : None,
-            "data" : []
+            "last_updated": None,
+            "data": []
         }
 
         URL = "https://www.yorku.ca/foodservices/dining-directory/"
@@ -32,7 +31,6 @@ class Extractor:
             "address": None,
             "map_address": None,
         }
-        
 
         # Get the page
         response = requests.get(URL)
@@ -51,7 +49,6 @@ class Extractor:
         # get rows
         rows = table.find_all("tr")
 
-
         #  extract data
         for row in rows:
             # get columns
@@ -60,7 +57,8 @@ class Extractor:
             if len(columns) > 1:
                 name = columns[0].find("a").text
                 # extract hours
-                hours = columns[1].find("div", {"class": "op-is-open-shortcode"}).text
+                hours = columns[1].find("div",
+                                        {"class": "op-is-open-shortcode"}).text
                 # extract address
                 address = columns[2].text
                 # extract map
@@ -75,6 +73,7 @@ class Extractor:
                 data_model["map_address"] = yutil.extract_shop_address(address)
 
                 json_data["data"].append(data_model.copy())
-                
-        json_data["last_updated"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        json_data["last_updated"] = datetime.datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S")
         return json_data
